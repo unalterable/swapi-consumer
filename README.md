@@ -1,6 +1,4 @@
-# Base Node/Webpack/React/Express Application
-
-This is a base template for a simple service using Node/Webpack/React/Express. Designed to be extremely simple.
+# Betr Lend Tech Test
 
 ## Installation
 

@@ -12,8 +12,10 @@ const initServer = () => {
       }
     },
     stop: async () => {
-      await runningServer.close();
-      runningServer = null;
+      if (runningServer) {
+        await runningServer.close();
+        runningServer = null;
+      }
     },
     getDomain: () => `http://localhost:${runningServer.address().port}`,
     getPort: () => runningServer.address().port,
