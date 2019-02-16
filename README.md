@@ -1,4 +1,4 @@
-# Betr Lend Tech Test
+# Swapi Consumer Tech Test
 
 ## Installation
 

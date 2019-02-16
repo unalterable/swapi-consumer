@@ -1,13 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import axios from 'axios';
 import debounce from 'debounce';
-
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
-
 import SearchBox from './SearchBox.jsx';
 import SwapiResults from './SwapiResults.jsx';
 import Alert from './Alert.jsx';
@@ -18,39 +14,31 @@ const styles = theme => ({
   main: {
     display: 'block',
     width: 600,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: theme.spacing.unit * 8,
+    margin: `${theme.spacing.unit * 8}px auto 0` ,
     alignItems: 'center',
     padding: `${theme.spacing.unit}px ${theme.spacing.unit}px ${theme.spacing.unit}px`,
   },
-  section: {
-    textAlign: 'center',
-    width: '70%',
-    margin: `${theme.spacing.unit}px auto`,
-  },
+  section: { textAlign: 'center', margin: `${theme.spacing.unit}px auto` },
 });
 
 
 class SwapiPersonSearcher extends React.Component {
   constructor(props){
     super(props);
-    this.state = { loading: false, results: null };
+    this.state = { loading: false, results: null, searchTerm: '' };
     this.debouncedFetchResults = debounce(this.fetchResults, 500);
   }
+
 
   fetchResults() {
     const url = createUrl(this.state.searchTerm);
     axios.get(url)
-      .then(({ data }) => this.setState({ loading: false, results: data }))
+      .then(({ data }) => url === createUrl(this.state.searchTerm) && this.setState({ loading: false, results: data }))
       .catch(() => this.setState({ error: true, loading: false }));
   }
 
   search(searchTerm) {
-    this.setState(
-      { searchTerm, loading: true, results: null },
-      this.debouncedFetchResults,
-    );
+    this.setState({ searchTerm, loading: true, results: null }, this.debouncedFetchResults);
   }
 
   render () {
@@ -62,18 +50,15 @@ class SwapiPersonSearcher extends React.Component {
           message="There was an error"
           open={!!this.state.error}
           onClose={() => this.setState({ error: null })} />
-
         <div className={classes.section}>
           <SearchBox
             searchTerm={this.state.searchTerm}
             onSearchTermChange={this.search.bind(this)}
           />
         </div>
-
         <div>
           <Divider variant='middle' />
         </div>
-
         <div className={classes.section}>
           <SwapiResults
             loading={this.state.loading}
@@ -84,9 +69,5 @@ class SwapiPersonSearcher extends React.Component {
     );
   }
 }
-
-SwapiPersonSearcher.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(styles)(SwapiPersonSearcher);

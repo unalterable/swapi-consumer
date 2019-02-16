@@ -1,6 +1,13 @@
-const webdriver = require('selenium-webdriver');
+const { remote } = require('webdriverio');
 const dockerStarter = require('docker-starter');
 const server = require('./server');
+
+const buildWdOpts = ({ host, port }) => ({
+  capabilities: { browserName: 'chrome' },
+  logLevel: 'silent',
+  hostname: host,
+  port,
+});
 
 const selenium = dockerStarter({
   container: 'selenium',
@@ -19,18 +26,14 @@ const browserHandle = (() => {
     getBrowser: async () => {
       if (!browser) {
         const { host, port } = selenium.ensureRunning();
-        const driver = new webdriver.Builder()
-          .forBrowser('chrome')
-          .usingServer(`http://${host}:${port}/wd/hub`)
-          .build();
-        browser = driver;
+        browser = await remote(buildWdOpts({ host, port }));
+        await browser.url(handle.getDomain());
       }
-      await browser.get(handle.getDomain());
       return browser;
     },
     closeBrowser: async () => {
-      if (browser) {
-        await browser.quit();
+      if(browser){
+        await browser.deleteSession();
         browser = null;
       }
     },
