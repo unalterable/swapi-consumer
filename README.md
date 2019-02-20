@@ -1,4 +1,4 @@
-# Swapi Consumer Tech Test
+# Swapi Consumer
 
 ## Installation
 
